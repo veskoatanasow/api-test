@@ -4,9 +4,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import utils.ApiClient;
-
-import java.util.HashMap;
-import java.util.Map;
+import utils.dto.request.CompetitionRequestDto;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,8 +24,8 @@ public class CompetitionsNegativeTests {
     @Test
     @DisplayName("Invalid gender value should return 400")
     void invalidGenderValue() {
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("gender", "unknown");
+        CompetitionRequestDto filters = new CompetitionRequestDto();
+        filters.setGender("unknown");
 
         Response response = ApiClient.getCompetitions(filters);
         assertEquals(400, response.statusCode());
@@ -36,12 +34,11 @@ public class CompetitionsNegativeTests {
         assertNotNull(message);
     }
 
-
     @Test
     @DisplayName("Invalid type value returns 400")
     void invalidTypeValue() {
-        Map<String, Object> filters = new HashMap<>();
-        filters.put("type", "invalid_type");
+        CompetitionRequestDto filters = new CompetitionRequestDto();
+        filters.setType("invalid_type");
 
         Response response = ApiClient.getCompetitions(filters);
         assertEquals(400, response.statusCode());

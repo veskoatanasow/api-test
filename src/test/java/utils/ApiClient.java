@@ -3,8 +3,7 @@ package utils;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-
-import java.util.Map;
+import utils.dto.request.CompetitionRequestDto;
 
 public class ApiClient {
 
@@ -20,13 +19,20 @@ public class ApiClient {
                 .queryParam("client_id", CLIENT_ID);
     }
 
-    public static Response getCompetitions(Map<String, Object> queryParams) {
+    public static Response getCompetitions(CompetitionRequestDto filters) {
         RequestSpecification request = getRequestSpec();
 
-        if (queryParams != null) {
-            for (Map.Entry<String, Object> entry : queryParams.entrySet()) {
-                request.queryParam(entry.getKey(), entry.getValue());
-            }
+        if (filters.getGender() != null) {
+            request.queryParam("gender", filters.getGender());
+        }
+        if (filters.getType() != null) {
+            request.queryParam("type", filters.getType());
+        }
+        if (filters.getCountryId() != null) {
+            request.queryParam("country_id", filters.getCountryId());
+        }
+        if (filters.getLang() != null) {
+            request.queryParam("lang", filters.getLang());
         }
 
         return request.when().get();
