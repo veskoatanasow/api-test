@@ -35,4 +35,22 @@ public class ApiClient {
     public static Response getCompetitionsWithOnlyKey() {
         return getRequestSpec().when().get();
     }
+
+    public static Response getCompetitionsWithoutKey() {
+        return RestAssured.given()
+                .baseUri(BASE_URL)
+                .queryParam("client_id", CLIENT_ID)
+                .basePath("/competitions")
+                .when()
+                .get();
+    }
+
+    public static Response getCompetitionsWithoutClientId() {
+        return RestAssured.given()
+                .baseUri(BASE_URL)
+                .queryParam("key", API_KEY)
+                .basePath("/competitions")
+                .when()
+                .get();
+    }
 }
