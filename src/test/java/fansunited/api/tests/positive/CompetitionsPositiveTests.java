@@ -82,4 +82,39 @@ public class CompetitionsPositiveTests extends BaseTest {
             assertEquals("fb:cnt:58", comp.getCountry().get("id").asText());
         }
     }
+
+    @Test
+    @DisplayName("Filter by name returns at least one matching competition")
+    void testNameFilterPositive() {
+        CompetitionRequestDto filters = new CompetitionRequestDto();
+        filters.setName("Primera");
+
+        Response response = ApiClient.getCompetitions(filters);
+        assertEquals(200, response.statusCode());
+
+        List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
+        assertFalse(competitions.isEmpty());
+
+        boolean matchFound = competitions.stream()
+                .anyMatch(comp -> comp.getName().toLowerCase().contains("primera"));
+
+        assertTrue(matchFound, "Expected at least one competition containing 'Primera' in the name.");
+    }
+
+    @Test
+    @DisplayName("Filter by non-matching name returns no results containing the name")
+    void testNameFilterNoMatch() {
+        CompetitionRequestDto filters = new CompetitionRequestDto();
+        filters.setName("NoSuchCompetitionXYZ");
+
+        Response response = ApiClient.getCompetitions(filters);
+        assertEquals(200, response.statusCode());
+
+        List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
+
+        boolean anyMatch = competitions.stream()
+                .anyMatch(c -> c.getName().toLowerCase().contains("nosuchcompetitionxyz"));
+
+        assertFalse(anyMatch, "Expected no competition name to contain 'NoSuchCompetitionXYZ'");
+    }
 }

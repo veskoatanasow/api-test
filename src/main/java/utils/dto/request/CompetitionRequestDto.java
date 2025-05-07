@@ -58,4 +58,9 @@ public class CompetitionRequestDto {
         if (lang != null) map.put("lang", lang);
         return map;
     }
+    @JsonProperty("name")
+    private String name;
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 }

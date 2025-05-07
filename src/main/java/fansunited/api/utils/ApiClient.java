@@ -47,6 +47,7 @@ public class ApiClient {
                 .when()
                 .get();
     }
+
     public static Response getCompetitionsWithoutApiKey() {
         return given()
                 .baseUri(TestConfig.BASE_URI)
@@ -68,6 +69,7 @@ public class ApiClient {
                 .when()
                 .get();
     }
+
     public static Response getCompetitionsWithoutClientId() {
         return given()
                 .baseUri(TestConfig.BASE_URI)

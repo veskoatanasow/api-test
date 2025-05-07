@@ -16,12 +16,11 @@ public class CompetitionResponseDto {
     @JsonProperty("gender")
     private String gender;
 
+    @JsonProperty("name")
+    private String name;
+
     @JsonProperty("country")
     private JsonNode country;
-
-    public JsonNode getCountry() {
-        return country;
-    }
 
     public String getId() {
         return id;
@@ -33,5 +32,13 @@ public class CompetitionResponseDto {
 
     public String getGender() {
         return gender;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public JsonNode getCountry() {
+        return country;
     }
 }

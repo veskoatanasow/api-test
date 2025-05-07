@@ -7,8 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import utils.dto.request.CompetitionRequestDto;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CompetitionsNegativeTests extends BaseTest {
 
@@ -27,7 +28,7 @@ public class CompetitionsNegativeTests extends BaseTest {
     void missingApiKeyReturns401() {
         Response response = ApiClient.getCompetitionsWithoutApiKey();
 
-        assertEquals(401, response.statusCode()); // API връща 401, не 403
+        assertEquals(401, response.statusCode());
         String message = response.jsonPath().getString("message");
         assertTrue(message != null && !message.isEmpty(), "Expected some error message when API key is missing");
     }
@@ -51,5 +52,41 @@ public class CompetitionsNegativeTests extends BaseTest {
         Response response = ApiClient.getCompetitionsWithInvalidMethod();
 
         assertEquals(400, response.statusCode());
+    }
+
+    @Test
+    @DisplayName("Edge case: empty strings for all filters")
+    void edgeCaseEmptyStrings() {
+        CompetitionRequestDto filters = new CompetitionRequestDto();
+        filters.setName("");
+        filters.setGender("");
+        filters.setType("");
+        filters.setCountryId("");
+
+        Response response = ApiClient.getCompetitions(filters);
+        assertEquals(200, response.statusCode());
+    }
+
+    @Test
+    @DisplayName("Edge case: name with special characters (possible injection)")
+    void edgeCaseNameInjectionLike() {
+        CompetitionRequestDto filters = new CompetitionRequestDto();
+        filters.setName("'; DROP TABLE competitions;--");
+
+        Response response = ApiClient.getCompetitions(filters);
+        assertEquals(200, response.statusCode());
+
+        List<?> data = response.jsonPath().getList("data");
+        assertNotNull(data);
+    }
+
+    @Test
+    @DisplayName("Edge case: extremely long name string")
+    void edgeCaseVeryLongName() {
+        CompetitionRequestDto filters = new CompetitionRequestDto();
+        filters.setName("a".repeat(5000));
+
+        Response response = ApiClient.getCompetitions(filters);
+        assertEquals(200, response.statusCode());
     }
 }
