@@ -1,4 +1,4 @@
-package utils;
+package fansunited.api.utils;
 
 import java.io.InputStream;
 import java.util.Properties;

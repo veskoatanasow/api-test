@@ -1,6 +1,8 @@
 package utils.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CompetitionRequestDto {
 
@@ -46,5 +48,14 @@ public class CompetitionRequestDto {
 
     public void setLang(String lang) {
         this.lang = lang;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        if (type != null) map.put("type", type);
+        if (gender != null) map.put("gender", gender);
+        if (countryId != null) map.put("country_id", countryId);
+        if (lang != null) map.put("lang", lang);
+        return map;
     }
 }
