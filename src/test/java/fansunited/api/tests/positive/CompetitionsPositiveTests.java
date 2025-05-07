@@ -105,7 +105,7 @@ public class CompetitionsPositiveTests extends BaseTest {
     @DisplayName("Filter by non-matching name returns no results containing the name")
     void testNameFilterNoMatch() {
         CompetitionRequestDto filters = new CompetitionRequestDto();
-        filters.setName("NoSuchCompetitionXYZ");
+        filters.setName("ProfesionalnaAgrupa");
 
         Response response = ApiClient.getCompetitions(filters);
         assertEquals(200, response.statusCode());
@@ -113,8 +113,8 @@ public class CompetitionsPositiveTests extends BaseTest {
         List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
 
         boolean anyMatch = competitions.stream()
-                .anyMatch(c -> c.getName().toLowerCase().contains("nosuchcompetitionxyz"));
+                .anyMatch(c -> c.getName().toLowerCase().contains("profesionalnaagrupa"));
 
-        assertFalse(anyMatch, "Expected no competition name to contain 'NoSuchCompetitionXYZ'");
+        assertFalse(anyMatch, "Expected no competition name to contain 'ProfesionalnaAgrupa'");
     }
 }

@@ -1,6 +1,7 @@
 package utils.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,9 +59,15 @@ public class CompetitionRequestDto {
         if (lang != null) map.put("lang", lang);
         return map;
     }
+
     @JsonProperty("name")
     private String name;
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
