@@ -117,4 +117,96 @@ public class CompetitionsPositiveTests extends BaseTest {
 
         assertFalse(anyMatch, "Expected no competition name to contain 'ProfesionalnaAgrupa'");
     }
+
+    @Test
+    @DisplayName("Filter by competition IDs returns only specified competitions")
+    void filterByCompetitionIds() {
+        List<String> expectedIds = List.of("fb:c:9845", "fb:c:99", "fb:c:98", "fb:c:97", "fb:c:1");
+
+        CompetitionRequestDto filters = new CompetitionRequestDto();
+        filters.setIds(expectedIds);
+
+        Response response = ApiClient.getCompetitions(filters);
+        assertEquals(200, response.statusCode());
+
+        List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
+        assertFalse(competitions.isEmpty());
+
+        for (CompetitionResponseDto comp : competitions) {
+            assertTrue(expectedIds.contains(comp.getId()), "Unexpected competition ID: " + comp.getId());
+        }
+    }
+
+
+    @Test
+    @DisplayName("Filter by name and gender - validate gender and at least one name match")
+    void filterByNameAndGender() {
+        CompetitionRequestDto filters = new CompetitionRequestDto();
+        filters.setName("liga");
+        filters.setGender("male");
+
+        Response response = ApiClient.getCompetitions(filters);
+        assertEquals(200, response.statusCode());
+
+        List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
+        assertFalse(competitions.isEmpty(), "Expected non-empty response for name and gender filter");
+
+        boolean nameMatchFound = false;
+
+        for (CompetitionResponseDto comp : competitions) {
+            assertEquals("male", comp.getGender(), "Gender mismatch: expected male");
+            if (comp.getName() != null && comp.getName().toLowerCase().contains("liga")) {
+                nameMatchFound = true;
+            }
+        }
+
+        assertTrue(nameMatchFound, "Expected at least one competition to contain 'liga' in its name.");
+    }
+
+    @Test
+    @DisplayName("Filter by countryId and type returns matching competitions")
+    void filterByCountryAndType() {
+        CompetitionRequestDto filters = new CompetitionRequestDto();
+        filters.setCountryId("fb:cnt:1224");
+        filters.setType("cup");
+
+        Response response = ApiClient.getCompetitions(filters);
+        assertEquals(200, response.statusCode());
+
+        List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
+        assertFalse(competitions.isEmpty());
+
+        for (CompetitionResponseDto comp : competitions) {
+            assertEquals("cup", comp.getType().toLowerCase());
+            assertEquals("fb:cnt:1224", comp.getCountry().get("id").asText());
+        }
+    }
+
+    @Test
+    @DisplayName("Filter by name, gender, and type combined")
+    void filterByNameGenderAndType() {
+        CompetitionRequestDto filters = new CompetitionRequestDto();
+        filters.setName("Super Cup");
+        filters.setGender("male");
+        filters.setType("cup");
+
+        Response response = ApiClient.getCompetitions(filters);
+        assertEquals(200, response.statusCode());
+
+        List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
+        assertFalse(competitions.isEmpty(), "Expected non-empty response for combined filter");
+
+        boolean nameMatchFound = false;
+
+        for (CompetitionResponseDto comp : competitions) {
+            assertEquals("male", comp.getGender(), "Gender mismatch: expected male");
+            assertEquals("cup", comp.getType().toLowerCase(), "Type mismatch: expected cup");
+
+            if (comp.getName() != null && comp.getName().toLowerCase().contains("super cup")) {
+                nameMatchFound = true;
+            }
+        }
+
+        assertTrue(nameMatchFound, "Expected at least one competition name to contain 'Super Cup'");
+    }
 }

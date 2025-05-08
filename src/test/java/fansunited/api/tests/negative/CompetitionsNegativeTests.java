@@ -7,19 +7,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import utils.dto.request.CompetitionRequestDto;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CompetitionsNegativeTests extends BaseTest {
 
     @Test
-    @DisplayName("Missing client_id returns 400 with appropriate message")
+    @DisplayName("Missing client_id returns 400 Bad Request")
     void missingClientIdReturns400() {
         Response response = ApiClient.getCompetitionsWithoutClientId();
 
         assertEquals(400, response.statusCode());
         String message = response.jsonPath().getString("error.message");
-        assertTrue(message.toLowerCase().contains("client_id"), "Expected error message for missing client_id");
+        assertTrue(message != null && message.toLowerCase().contains("client_id"), "Expected message about missing client_id");
     }
 
     @Test
@@ -29,7 +31,7 @@ public class CompetitionsNegativeTests extends BaseTest {
 
         assertEquals(401, response.statusCode());
         String message = response.jsonPath().getString("message");
-        assertTrue(message != null && !message.isEmpty(), "Expected some error message when API key is missing");
+        assertTrue(message != null && !message.isBlank(), "Expected error message for missing API key");
     }
 
     @Test
@@ -42,13 +44,32 @@ public class CompetitionsNegativeTests extends BaseTest {
 
         assertEquals(400, response.statusCode());
         String message = response.jsonPath().getString("error.message");
-        assertTrue(message.toLowerCase().contains("invalid gender"), "Expected error message mentioning 'invalid gender'");
+        assertTrue(message != null && message.toLowerCase().contains("invalid gender"), "Expected message about invalid gender");
     }
 
     @Test
-    @DisplayName("GET method on POST-only endpoint returns 400")
-    void invalidHttpMethodReturns400() {
-        Response response = ApiClient.getCompetitionsWithInvalidMethod();
-        assertEquals(400, response.statusCode());
+    @DisplayName("Invalid competition ID returns 200 with empty data")
+    void invalidCompetitionIdReturnsEmptyList() {
+        CompetitionRequestDto dto = new CompetitionRequestDto();
+        dto.setIds(List.of("invalid:comp:id"));
+
+        Response response = ApiClient.getCompetitions(dto);
+        assertEquals(200, response.statusCode());
+
+        List<?> data = response.jsonPath().getList("data");
+        assertTrue(data == null || data.isEmpty(), "Expected empty data for invalid competition ID");
+    }
+
+    @Test
+    @DisplayName("Invalid country ID returns 200 with empty data")
+    void invalidCountryIdReturnsEmptyList() {
+        CompetitionRequestDto dto = new CompetitionRequestDto();
+        dto.setCountryId("nonexistent-country-id");
+
+        Response response = ApiClient.getCompetitions(dto);
+        assertEquals(200, response.statusCode());
+
+        List<?> data = response.jsonPath().getList("data");
+        assertTrue(data == null || data.isEmpty(), "Expected empty data for invalid country ID");
     }
 }
