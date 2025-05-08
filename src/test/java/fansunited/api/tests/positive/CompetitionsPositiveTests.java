@@ -20,7 +20,7 @@ public class CompetitionsPositiveTests extends BaseTest {
     @DisplayName("GET /competitions with only API key and client ID returns list")
     void getAllCompetitions() {
         Response response = ApiClient.getCompetitionsWithOnlyKey();
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<CompetitionResponseDto> data = response.jsonPath().getList("data", CompetitionResponseDto.class);
         assertNotNull(data);
@@ -34,7 +34,7 @@ public class CompetitionsPositiveTests extends BaseTest {
         filters.setGender("female");
 
         Response response = ApiClient.getCompetitions(filters);
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
         assertFalse(competitions.isEmpty());
@@ -52,7 +52,7 @@ public class CompetitionsPositiveTests extends BaseTest {
         filters.setType(type);
 
         Response response = ApiClient.getCompetitions(filters);
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
         assertFalse(competitions.isEmpty());
@@ -71,7 +71,7 @@ public class CompetitionsPositiveTests extends BaseTest {
         filters.setCountryId("fb:cnt:58");
 
         Response response = ApiClient.getCompetitions(filters);
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
         assertFalse(competitions.isEmpty());
@@ -90,7 +90,7 @@ public class CompetitionsPositiveTests extends BaseTest {
         filters.setName("Primera");
 
         Response response = ApiClient.getCompetitions(filters);
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
         assertFalse(competitions.isEmpty());
@@ -108,7 +108,7 @@ public class CompetitionsPositiveTests extends BaseTest {
         filters.setName("ProfesionalnaAgrupa");
 
         Response response = ApiClient.getCompetitions(filters);
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
 
@@ -127,7 +127,7 @@ public class CompetitionsPositiveTests extends BaseTest {
         filters.setIds(expectedIds);
 
         Response response = ApiClient.getCompetitions(filters);
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
         assertFalse(competitions.isEmpty());
@@ -137,7 +137,6 @@ public class CompetitionsPositiveTests extends BaseTest {
         }
     }
 
-
     @Test
     @DisplayName("Filter by name and gender - validate gender and at least one name match")
     void filterByNameAndGender() {
@@ -146,7 +145,7 @@ public class CompetitionsPositiveTests extends BaseTest {
         filters.setGender("male");
 
         Response response = ApiClient.getCompetitions(filters);
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
         assertFalse(competitions.isEmpty(), "Expected non-empty response for name and gender filter");
@@ -171,7 +170,7 @@ public class CompetitionsPositiveTests extends BaseTest {
         filters.setType("cup");
 
         Response response = ApiClient.getCompetitions(filters);
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
         assertFalse(competitions.isEmpty());
@@ -191,7 +190,7 @@ public class CompetitionsPositiveTests extends BaseTest {
         filters.setType("cup");
 
         Response response = ApiClient.getCompetitions(filters);
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<CompetitionResponseDto> competitions = response.jsonPath().getList("data", CompetitionResponseDto.class);
         assertFalse(competitions.isEmpty(), "Expected non-empty response for combined filter");

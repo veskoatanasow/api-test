@@ -11,6 +11,11 @@ import java.util.Properties;
 
 public abstract class BaseTest {
 
+    protected static final int STATUS_OK = 200;
+    protected static final int STATUS_BAD_REQUEST = 400;
+    protected static final int STATUS_UNAUTHORIZED = 401;
+    protected static final int STATUS_NOT_FOUND = 404;
+
     public static String BASE_URI;
     public static String BASE_PATH;
     public static String API_KEY;

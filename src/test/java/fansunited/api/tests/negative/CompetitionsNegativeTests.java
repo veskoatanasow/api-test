@@ -9,8 +9,7 @@ import utils.dto.request.CompetitionRequestDto;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CompetitionsNegativeTests extends BaseTest {
 
@@ -19,9 +18,10 @@ public class CompetitionsNegativeTests extends BaseTest {
     void missingClientIdReturns400() {
         Response response = ApiClient.getCompetitionsWithoutClientId();
 
-        assertEquals(400, response.statusCode());
+        assertEquals(STATUS_BAD_REQUEST, response.statusCode());
         String message = response.jsonPath().getString("error.message");
-        assertTrue(message != null && message.toLowerCase().contains("client_id"), "Expected message about missing client_id");
+        assertTrue(message != null && message.toLowerCase().contains("client_id"),
+                "Expected error message about missing client_id");
     }
 
     @Test
@@ -29,9 +29,10 @@ public class CompetitionsNegativeTests extends BaseTest {
     void missingApiKeyReturns401() {
         Response response = ApiClient.getCompetitionsWithoutApiKey();
 
-        assertEquals(401, response.statusCode());
+        assertEquals(STATUS_UNAUTHORIZED, response.statusCode());
         String message = response.jsonPath().getString("message");
-        assertTrue(message != null && !message.isBlank(), "Expected error message for missing API key");
+        assertTrue(message != null && !message.isBlank(),
+                "Expected non-empty error message for missing API key");
     }
 
     @Test
@@ -42,9 +43,10 @@ public class CompetitionsNegativeTests extends BaseTest {
 
         Response response = ApiClient.getCompetitions(dto);
 
-        assertEquals(400, response.statusCode());
+        assertEquals(STATUS_BAD_REQUEST, response.statusCode());
         String message = response.jsonPath().getString("error.message");
-        assertTrue(message != null && message.toLowerCase().contains("invalid gender"), "Expected message about invalid gender");
+        assertTrue(message != null && message.toLowerCase().contains("invalid gender"),
+                "Expected error message about invalid gender");
     }
 
     @Test
@@ -54,7 +56,7 @@ public class CompetitionsNegativeTests extends BaseTest {
         dto.setIds(List.of("invalid:comp:id"));
 
         Response response = ApiClient.getCompetitions(dto);
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<?> data = response.jsonPath().getList("data");
         assertTrue(data == null || data.isEmpty(), "Expected empty data for invalid competition ID");
@@ -67,7 +69,7 @@ public class CompetitionsNegativeTests extends BaseTest {
         dto.setCountryId("nonexistent-country-id");
 
         Response response = ApiClient.getCompetitions(dto);
-        assertEquals(200, response.statusCode());
+        assertEquals(STATUS_OK, response.statusCode());
 
         List<?> data = response.jsonPath().getList("data");
         assertTrue(data == null || data.isEmpty(), "Expected empty data for invalid country ID");
