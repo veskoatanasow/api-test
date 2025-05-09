@@ -2,7 +2,6 @@ package utils.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompetitionResponseDto {
@@ -20,7 +19,7 @@ public class CompetitionResponseDto {
     private String name;
 
     @JsonProperty("country")
-    private JsonNode country;
+    private CountryDto country;
 
     public String getId() {
         return id;
@@ -38,7 +37,32 @@ public class CompetitionResponseDto {
         return name;
     }
 
-    public JsonNode getCountry() {
+    public CountryDto getCountry() {
         return country;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class CountryDto {
+
+        @JsonProperty("id")
+        private String id;
+
+        @JsonProperty("name")
+        private String name;
+
+        @JsonProperty("country_code")
+        private String countryCode;
+
+        public String getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getCountryCode() {
+            return countryCode;
+        }
     }
 }

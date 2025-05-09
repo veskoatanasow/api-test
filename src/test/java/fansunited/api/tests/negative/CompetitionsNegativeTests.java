@@ -11,6 +11,7 @@ import utils.dto.request.CompetitionRequestDto;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CompetitionsNegativeTests extends BaseTest {
@@ -20,6 +21,9 @@ public class CompetitionsNegativeTests extends BaseTest {
     void missingClientIdReturns400() {
         Response response = ApiClient.getCompetitionsWithoutClientId();
         TestHelpers.assertStatus(response, HttpStatus.SC_BAD_REQUEST);
+
+        String message = response.jsonPath().getString("error.message");
+        assertNotNull(message, "Expected error message for missing client_id");
     }
 
     @Test
@@ -27,6 +31,9 @@ public class CompetitionsNegativeTests extends BaseTest {
     void missingApiKeyReturns401() {
         Response response = ApiClient.getCompetitionsWithoutApiKey();
         TestHelpers.assertStatus(response, HttpStatus.SC_UNAUTHORIZED);
+
+        String message = response.jsonPath().getString("message");
+        assertNotNull(message, "Expected error message for missing API key");
     }
 
     @Test
@@ -37,6 +44,9 @@ public class CompetitionsNegativeTests extends BaseTest {
 
         Response response = ApiClient.getCompetitions(dto);
         TestHelpers.assertStatus(response, HttpStatus.SC_BAD_REQUEST);
+
+        String message = response.jsonPath().getString("error.message");
+        assertNotNull(message, "Expected validation error for invalid gender");
     }
 
     @Test
@@ -49,7 +59,7 @@ public class CompetitionsNegativeTests extends BaseTest {
         TestHelpers.assertStatus(response, HttpStatus.SC_OK);
 
         List<?> data = response.jsonPath().getList("data");
-        assertTrue(data == null || data.isEmpty());
+        assertTrue(data == null || data.isEmpty(), "Expected empty data for invalid competition ID");
     }
 
     @Test
@@ -62,6 +72,19 @@ public class CompetitionsNegativeTests extends BaseTest {
         TestHelpers.assertStatus(response, HttpStatus.SC_OK);
 
         List<?> data = response.jsonPath().getList("data");
-        assertTrue(data == null || data.isEmpty());
+        assertTrue(data == null || data.isEmpty(), "Expected empty data for invalid country ID");
+    }
+
+    @Test
+    @DisplayName("Empty name search returns empty list")
+    void emptyNameReturnsValidResponse() {
+        CompetitionRequestDto dto = new CompetitionRequestDto();
+        dto.setName("");
+
+        Response response = ApiClient.getCompetitions(dto);
+        TestHelpers.assertStatus(response, HttpStatus.SC_OK);
+
+        List<?> data = response.jsonPath().getList("data");
+        assertNotNull(data, "Expected response even with empty name");
     }
 }

@@ -42,11 +42,4 @@ public class ApiClient {
                 .queryParam("key", TestConfig.API_KEY)
                 .get();
     }
-
-    public static Response getCompetitionsWithInvalidMethod() {
-        return getBaseRequestSpec()
-                .queryParam("key", TestConfig.API_KEY)
-                .queryParam("client_id", TestConfig.CLIENT_ID)
-                .get();
-    }
 }
